@@ -1,5 +1,5 @@
 (function(){
-    var app = angular.module('autosApp', []);
+    var app = angular.module('autosApp', ['ui.router']);
 
     app.directive('navBar', function(){
 	return {
@@ -20,14 +20,19 @@
 	};
     });
 
-    app.directive('navContent', function(){
-	return {
-	    restrict: 'AE',
-	    templateUrl: suJs('templates/nav-content.html'),
-	    controllerAs: 'cont',
-	    controller: function(){
-		this.test_content = 'Content'
-	    }
-	};
+    // Rotas
+    app.config(function($stateProvider, $urlRouterProvider) {
+	// Rota default
+	$urlRouterProvider.otherwise('/veiculos');
+
+	$stateProvider
+	    .state('vehicles', {
+		url: "/veiculos",
+		templateUrl: suJs('templates/contents/vehicles.html')
+	    })
+	    .state('marks', {
+		url: '/marcas',
+		templateUrl: suJs('templates/contents/marks.html')
+	    });
     });
 })();
