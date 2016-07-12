@@ -1,0 +1,39 @@
+{% load staticfiles %}
+<!doctype html>
+<html ng-app="autosApp">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+	integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+	crossorigin="anonymous">
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
+  <script src="{% static 'front/js/angular-ui-router.min.js' %}"></script>
+  <script>
+    var myApp = angular.module('myApp', ['ui.router']);
+    // For Component users, it should look like this:
+    // var myApp = angular.module('myApp', [require('angular-ui-router')]);
+  </script>
+</head>
+<body>
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">Autos (by Alisson R. Perez)</a>
+    </div>
+  </div><!-- /.container-fluid -->
+</nav>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2">
+      <ul class="nav nav-pills nav-stacked">
+	<li role="presentation" class="active"><a href="#">Veiculos</a></li>
+	<li role="presentation"><a href="#">Montadoras</a></li>
+	<li role="presentation"><a href="#">Marcas</a></li>
+      </ul>
+    </div>
+    <div class="col-md-10">Content</div>
+  </div>
+</div>
+</body>
+</html>
