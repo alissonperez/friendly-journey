@@ -30,9 +30,9 @@
 		url: "/veiculos",
 		templateUrl: suJs('templates/contents/vehicles.html')
 	    })
-	    .state('marks', {
-		url: '/marcas',
-		templateUrl: suJs('templates/contents/marks.html')
+	    .state('models', {
+		url: '/modelos',
+		templateUrl: suJs('templates/contents/models.html')
 	    });
     });
 })();
