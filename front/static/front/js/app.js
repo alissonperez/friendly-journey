@@ -30,6 +30,10 @@
 		url: "/veiculos",
 		templateUrl: suJs('templates/contents/vehicles.html')
 	    })
+	    .state('auto-makers', {
+		url: "/montadoras",
+		templateUrl: suJs('templates/contents/auto-makers.html')
+	    })
 	    .state('models', {
 		url: '/modelos',
 		templateUrl: suJs('templates/contents/models.html')
