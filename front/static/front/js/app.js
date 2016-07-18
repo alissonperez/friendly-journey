@@ -5,18 +5,6 @@
 	return {
 	    restrict: 'AE',
 	    templateUrl: suJs('templates/nav-bar.html'),
-	    controllerAs: 'nav',
-	    controller: function(){
-		this.active = 1;
-
-		this.setActive = function(value){
-		    this.active = value;
-		};
-
-		this.isActive = function(value){
-		    return this.active == value;
-		}
-	    }
 	};
     });
 
