@@ -1,0 +1,27 @@
+<div class="modal fade" id="newAutoMakerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" >
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form ng-submit="save()">
+	<div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" ng-hide="auto_maker.id">Nova montadora</h4>
+	  <h4 class="modal-title" ng-show="auto_maker.id">Editar montadora "{{auto_maker.name}}"</h4>
+	</div>
+	<div class="modal-body">
+	  <div class="row">
+	    <div class="col-md-12">
+	      <div class="form-group">
+		<label for="inputName">Nome</label>
+		<input type="text" class="form-control" placeholder="Name" required="true" ng-model="auto_maker.name">
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	<div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+          <button type="submit" class="btn btn-primary">Gravar</button>
+	</div>
+      </form>
+    </div>
+  </div>
+</div>
