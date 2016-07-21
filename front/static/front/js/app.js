@@ -10,8 +10,15 @@
 
     app.directive('manageAutoMaker', function(){
 	return {
-	    restrict: 'AE',
+	    restrict: 'E',
 	    templateUrl: suJs('templates/contents/auto-makers.new.html'),
+	};
+    });
+
+    app.directive('manageModel', function(){
+	return {
+	    restrict: 'E',
+	    templateUrl: suJs('templates/contents/models.new.html'),
 	};
     });
 
@@ -27,25 +34,51 @@
 		confirm: "&onConfirm"
 	    }
 	};
-    })
+    });
 
     // AutoMaker provider
     app.provider('AutoMaker', function AutoMakerProvider(){
+	var baseUrl = '/api/v1/automakers/';
+
 	this.$get = function($http) {
 	    return {
 		all: function() {
-		    return $http.get('/api/v1/automakers/');
+		    return $http.get(baseUrl);
 		},
 		save: function(automaker) {
 		    if (automaker.id) {
-			return $http.patch('/api/v1/automakers/' + automaker.id + '/', automaker);
+			return $http.patch(baseUrl + automaker.id + '/', automaker);
 		    }
 		    else {
-			return $http.post('/api/v1/automakers/', automaker);
+			return $http.post(baseUrl, automaker);
 		    }
 		},
 		delete: function(automaker) {
-		    return $http.delete('/api/v1/automakers/' + automaker.id + '/', automaker);
+		    return $http.delete(baseUrl + automaker.id + '/', automaker);
+		}
+	    }
+	};
+    });
+
+    // VehicleModel provider
+    app.provider('VehicleModel', function AutoMakerProvider(){
+	var baseUrl = '/api/v1/models/';
+
+	this.$get = function($http) {
+	    return {
+		all: function() {
+		    return $http.get(baseUrl);
+		},
+		save: function(automaker) {
+		    if (automaker.id) {
+			return $http.patch(baseUrl + automaker.id + '/', automaker);
+		    }
+		    else {
+			return $http.post(baseUrl, automaker);
+		    }
+		},
+		delete: function(automaker) {
+		    return $http.delete(baseUrl + automaker.id + '/', automaker);
 		}
 	    }
 	};
@@ -107,7 +140,53 @@
 	    })
 	    .state('models', {
 		url: '/modelos',
-		templateUrl: suJs('templates/contents/models.html')
+		templateUrl: suJs('templates/contents/models.html'),
+		controller: ['$scope', 'VehicleModel', 'AutoMaker', function($scope, VehicleModel, AutoMaker){
+		    $scope.list = [];
+		    $scope.auto_makers = [];
+
+		    AutoMaker.all().success(function(data){
+			$scope.auto_makers = data;
+		    });
+
+		    function load_items() {
+			VehicleModel.all().success(function(data){
+			    console.log(data)
+			    $scope.list = data;
+			});
+		    }
+
+		    load_items()
+
+		    $scope.deleteConfirm = function(model) {
+			$scope.vehicle_model = model;
+			$("#modalDeleteVehicleModel").modal();
+		    };
+
+		    $scope.delete = function(model) {
+			$("#modalDeleteVehicleModel").modal('hide');
+			VehicleModel.delete(model).success(function(data){
+			    load_items();
+			});
+		    };
+
+		    $scope.showNew = function() {
+			$scope.vehicle_model = {};
+			$('#newVehicleModelModal').modal();
+		    };
+
+		    $scope.edit = function(model){
+			$scope.vehicle_model = model;
+			$('#newVehicleModelModal').modal();
+		    };
+
+		    $scope.save = function(model) {
+			VehicleModel.save(model).success(function(data){
+			    $('#newVehicleModelModal').modal('hide');
+			    load_items();
+			});
+		    };
+		}]
 	    });
     });
 })();

@@ -1,0 +1,36 @@
+<div class="modal fade" id="newVehicleModelModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form ng-submit="save(vehicle_model)">
+	<div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" ng-hide="vehicle_model.id">Novo modelo</h4>
+	  <h4 class="modal-title" ng-show="vehicle_model.id">Editar modelo "{{vehicle_model.name}}"</h4>
+	</div>
+	<div class="modal-body">
+	  <div class="row">
+	    <div class="col-md-12">
+	      <div class="form-group">
+		<label for="inputName">Nome</label>
+		<input type="text" class="form-control" placeholder="" required="true" ng-model="vehicle_model.name">
+	      </div>
+	      <div class="form-group">
+		<label for="inputName">Ano</label>
+		<input type="text" class="form-control" placeholder="" required="true" ng-model="vehicle_model.year">
+	      </div>
+	      <div class="form-group">
+		<label for="inputName">Montadora</label>
+		<select ng-model="vehicle_model.auto_maker" class="form-control" ng-options="item.id as item.name for item in auto_makers">
+		</select>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	<div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+          <button type="submit" class="btn btn-primary">Gravar</button>
+	</div>
+      </form>
+    </div>
+  </div>
+</div>

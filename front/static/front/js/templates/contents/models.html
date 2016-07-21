@@ -4,7 +4,7 @@
   </div>
 
   <div class="col-md-2">
-    <a class="btn btn-success col-md-12" href="#" role="button">Adicionar modelo</a>
+    <a class="btn btn-success col-md-12" role="button" ng-click="showNew()">Adicionar modelo</a>
   </div>
 </div>
 
@@ -12,20 +12,28 @@
   <div class="col-md-12">
     <table class="table">
       <thead>
-	<th>ID</th>
-	<th>Modelo</th>
-	<th>Montadora</th>
+	<th class="col-md-1">ID</th>
+	<th class="col-md-6">Modelo</th>
+	<th class="col-md-1">Ano</th>
+	<th class="col-md-2">Montadora</th>
+	<th class="col-md-2">&nbsp;</th>
       </thead>
-      <tr>
-	<td>1</td>
-	<td>Corolla</td>
-	<td>Toyota</td>
-      <tr>
-      <tr>
-	<td>1</td>
-	<td>Corolla</td>
-	<td>Toyota</td>
+      <tr ng-repeat="item in list">
+	<td>{{item.id}}</td>
+	<td>{{item.name}}</td>
+	<td>{{item.year}}</td>
+	<td>{{item.auto_maker_info.id}} - {{item.auto_maker_info.name}}</td>
+	<td><input class="btn btn-success btn-xs" type="button" value="Editar" ng-click="edit(item)"> <input class="btn btn-danger btn-xs" type="button" value="Apagar" ng-click="deleteConfirm(item)"></td>
       <tr>
     </table>
   </div>
 </div>
+
+<manage-model></manage-model>
+
+<modal-delete-item
+   modal-id="modalDeleteVehicleModel"
+   entity="Modelo"
+   name="{{vehicle_model.id}} - {{vehicle_model.name}}"
+   item="vehicle_model"
+   on-confirm="delete(vehicle_model)"></modal-delete-item>
