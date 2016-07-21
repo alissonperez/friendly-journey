@@ -4,7 +4,8 @@ from django.conf.urls.static import static
 
 
 urlpatterns = [
-    url(r'^', include('front.urls'))
+    url(r'^', include('front.urls')),
+    url(r'^api/', include('api.urls', namespace='api'))
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
