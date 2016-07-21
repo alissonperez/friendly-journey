@@ -12,15 +12,6 @@
 	return {
 	    restrict: 'AE',
 	    templateUrl: suJs('templates/contents/auto-makers.new.html'),
-	    controller: function($scope, AutoMaker){
-		if (! $scope.auto_maker) {
-		    $scope.auto_maker = {};
-		}
-
-		$scope.save = function() {
-		    AutoMaker.save($scope.auto_maker);
-		};
-	    }
 	};
     });
 
@@ -40,24 +31,21 @@
 
     // AutoMaker provider
     app.provider('AutoMaker', function AutoMakerProvider(){
-	this.$get = function() {
+	this.$get = function($http) {
 	    return {
 		all: function() {
-		    return [
-			{id: 1, name: 'Toyota'},
-			{id: 2, name: 'Fiat'},
-		    ]
+		    return $http.get('/api/v1/automakers/');
 		},
 		save: function(automaker) {
 		    if (automaker.id) {
-			console.log('Updating ' + automaker.name);
+			return $http.patch('/api/v1/automakers/' + automaker.id + '/', automaker);
 		    }
 		    else {
-			console.log('Creating ' + automaker.name);
+			return $http.post('/api/v1/automakers/', automaker);
 		    }
 		},
 		delete: function(automaker) {
-		    console.log('Deleting ' + automaker.name);
+		    return $http.delete('/api/v1/automakers/' + automaker.id + '/', automaker);
 		}
 	    }
 	};
@@ -77,10 +65,18 @@
 		url: "/montadoras",
 		templateUrl: suJs('templates/contents/auto-makers.html'),
 		controller: ['$scope', 'AutoMaker', function($scope, AutoMaker){
-		    $scope.list = AutoMaker.all();
+		    $scope.list = [];
+
+		    function load_items(){
+			AutoMaker.all().success(function(data){
+			    $scope.list = data;
+			});
+		    }
+
+		    load_items();
 
 		    $scope.showNew = function(){
-			$scope.auto_maker = null;
+			$scope.auto_maker = {};
 			$("#newAutoMakerModal").modal();
 		    };
 
@@ -91,12 +87,21 @@
 
 		    $scope.delete = function(automaker) {
 			$("#modalDeleteAutoMaker").modal('hide');
-			AutoMaker.delete(automaker);
+			AutoMaker.delete(automaker).success(function(data){
+			    load_items();
+			});
 		    };
 
 		    $scope.edit = function(automaker) {
 			$scope.auto_maker = automaker;
 			$("#newAutoMakerModal").modal();
+		    };
+
+		    $scope.save = function(automaker) {
+			AutoMaker.save(automaker).success(function(data){
+			    $("#newAutoMakerModal").modal('hide');
+			    load_items();
+			});
 		    };
 		}]
 	    })
