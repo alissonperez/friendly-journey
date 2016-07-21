@@ -41,3 +41,39 @@ class AutoMakerSerializerTestCase(TestCase):
         result = serializer.save()
 
         self.assertEqual(result.id, 1)
+
+
+class VehicleModelSerializerTestCase(TestCase):
+
+    def test_data_must_have_expected_fields(self):
+        model = factories.VehicleModelFactory()
+        serializer = sls.VehicleModelSerializer(model)
+
+        expected_fields = {'id', 'auto_maker', 'year', 'name'}
+        self.assertEqual(set(dict(serializer.data).keys()), expected_fields)
+
+    def test_data_must_be_with_expected_data(self):
+        model = factories.VehicleModelFactory()
+        serializer = sls.VehicleModelSerializer(model)
+
+        self.assertEqual(serializer.data['id'], model.id)
+        self.assertEqual(serializer.data['name'], model.name)
+        self.assertEqual(serializer.data['year'], model.year)
+        self.assertEqual(serializer.data['auto_maker'], model.auto_maker_id)
+
+        automaker_serializer = sls.AutoMakerSerializer(model.auto_maker)
+        self.assertEqual(serializer.data['auto_maker_info'], automaker_serializer.data)
+
+    def test_save_must_create_new_object(self):
+        auto_maker = factories.AutoMakerFactory()
+        data = dict(
+            year=1997,
+            name='Corsa',
+            auto_maker=auto_maker.id
+        )
+
+        serializer = sls.VehicleModelSerializer(data=data)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        result = serializer.save()
+
+        self.assertIsInstance(result, models.VehicleModel)
