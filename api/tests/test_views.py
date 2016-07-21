@@ -55,3 +55,58 @@ class AutoMakerEndpointTestCase(TestCase):
 
         self.assertIsNone(
             models.AutoMaker.objects.filter(id=automaker.id).first())
+
+
+class VehicleModelEndpointTestCase(TestCase):
+
+    def setUp(self):
+        self.vehicle_models = []
+        for i in range(3):
+            self.vehicle_models.append(factories.VehicleModelFactory())
+
+        self.c = Client()
+        self.list_url = reverse('api:vehiclemodel-list')
+
+    def test_get_must_return_list_of_all_vehicles(self):
+        response = self.c.get(self.list_url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 3)
+
+    def test_post_must_create_a_vehicle_model(self):
+        auto_maker = self.vehicle_models[0].auto_maker
+        data = dict(
+            name='Corsa',
+            year=1997,
+            auto_maker=auto_maker.id
+        )
+
+        response = self.c.post(self.list_url, data=data)
+
+        self.assertEqual(response.status_code, 201)
+
+        models.VehicleModel.objects.get(name='Corsa',
+                                        year=1997,
+                                        auto_maker=auto_maker)
+
+    def test_patch_must_edit_a_vehicle_model(self):
+        model = self.vehicle_models[0]
+
+        data = dict(name='Celta')
+
+        url = reverse('api:vehiclemodel-detail', args=[model.id])
+        response = self.c.patch(url, data=json.dumps(data), content_type='application/json')
+
+        self.assertEqual(response.status_code, 200)
+
+        model.refresh_from_db()
+        self.assertEqual(model.name, 'Celta')
+
+    def test_delete_must_remove_a_vehicle(self):
+        model = self.vehicle_models[0]
+        url = reverse('api:vehiclemodel-detail', args=[model.id])
+        response = self.c.delete(url)
+
+        self.assertEqual(response.status_code, 204)
+
+        self.assertIsNone(models.VehicleModel.objects.filter(id=model.id).first())
