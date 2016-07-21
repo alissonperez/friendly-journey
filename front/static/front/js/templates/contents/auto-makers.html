@@ -19,7 +19,7 @@
       <tr ng-repeat="item in list">
 	<td>{{item.id}}</td>
 	<td>{{item.name}}</td>
-	<td><input class="btn btn-info btn-xs" type="button" value="Editar" ng-click="edit(item)"> <input class="btn btn-danger btn-xs" type="button" value="Apagar" ng-click="delete(item)"></td>
+	<td><input class="btn btn-success btn-xs" type="button" value="Editar" ng-click="edit(item)"> <input class="btn btn-danger btn-xs" type="button" value="Apagar" ng-click="deleteConfirm(item)"></td>
       <tr>
     </table>
   </div>
@@ -27,3 +27,9 @@
 
 <!-- Modal -->
 <manage-auto-maker></manage-auto-maker>
+<modal-delete-item
+   modal-id="modalDeleteAutoMaker"
+   entity="Montadora"
+   name="{{auto_maker.id}} - {{auto_maker.name}}"
+   item="auto_maker"
+   on-confirm="delete(auto_maker)"></modal-delete-item>

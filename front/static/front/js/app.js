@@ -50,14 +50,14 @@
 		},
 		save: function(automaker) {
 		    if (automaker.id) {
-			alert('Updating ' + automaker.name);
+			console.log('Updating ' + automaker.name);
 		    }
 		    else {
-			alert('Creating ' + automaker.name);
+			console.log('Creating ' + automaker.name);
 		    }
 		},
 		delete: function(automaker) {
-		    alert('Removing ' + automaker.name);
+		    console.log('Deleting ' + automaker.name);
 		}
 	    }
 	};
@@ -84,7 +84,13 @@
 			$("#newAutoMakerModal").modal();
 		    };
 
+		    $scope.deleteConfirm = function(automaker) {
+			$scope.auto_maker = automaker;
+			$("#modalDeleteAutoMaker").modal();
+		    }
+
 		    $scope.delete = function(automaker) {
+			$("#modalDeleteAutoMaker").modal('hide');
 			AutoMaker.delete(automaker);
 		    };
 
