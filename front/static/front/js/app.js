@@ -24,6 +24,20 @@
 	};
     });
 
+    app.directive('modalDeleteItem', function(){
+	return {
+	    restrict: 'AE',
+	    templateUrl: suJs('templates/contents/modal-delete-item.html'),
+	    scope: {
+		modalId: "@",
+		entity: "@",
+		name: "@",
+		item: "=",
+		confirm: "&onConfirm"
+	    }
+	};
+    })
+
     // AutoMaker provider
     app.provider('AutoMaker', function AutoMakerProvider(){
 	this.$get = function() {
