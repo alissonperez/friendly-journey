@@ -22,7 +22,9 @@ class VehicleModelSerializer(serializers.ModelSerializer):
 
 class VehicleSerializer(serializers.ModelSerializer):
     model = serializers.PrimaryKeyRelatedField(queryset=models.VehicleModel.objects.all())
+    model_info = VehicleModelSerializer(
+        read_only=True, source='model')
 
     class Meta:
         model = models.Vehicle
-        fields = ('id', 'color', 'mileage', 'engine', 'model')
+        fields = ('id', 'color', 'mileage', 'engine', 'model', 'model_info')
