@@ -80,3 +80,13 @@ class VehicleModelSerializerTestCase(TestCase):
         result = serializer.save()
 
         self.assertIsInstance(result, models.VehicleModel)
+
+
+class VehicleSerializerTestCase(TestCase):
+
+    def test_data_must_have_expected_fields(self):
+        vehicle = factories.VehicleFactory()
+        serializer = sls.VehicleSerializer(vehicle)
+
+        expected_fields = {'id', 'color', 'model', 'mileage', 'engine'}
+        self.assertEqual(set(dict(serializer.data).keys()), expected_fields)
