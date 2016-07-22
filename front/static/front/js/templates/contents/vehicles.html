@@ -4,42 +4,33 @@
   </div>
 
   <div class="col-md-2">
-    <a class="btn btn-success col-md-12" href="#" role="button">Adicionar veiculo</a>
+    <a class="btn btn-success col-md-12" role="button" ng-click="showNew()">Adicionar veiculo</a>
   </div>
 </div>
 
 <div class="row">
-  <div class="col-md-12">
-    <ul class="nav nav-tabs">
-      <li role="presentation" class="active"><a href="#">Carros</a></li>
-      <li role="presentation"><a href="#">Motos</a></li>
-    </ul>
-  </div>
-</div>
 
-<div class="row">
   <div class="col-md-9">
     <table class="table">
       <thead>
 	<th>ID</th>
+	<th>Tipo</th>
 	<th>Montadora</th>
 	<th>Modelo</th>
+	<th>Ano</th>
 	<th>Cor</th>
-	<th>Kilometragem</th>
+	<th>Quilometragem</th>
+	<th>&nbsp;</th>
       </thead>
-      <tr>
-	<td>1</td>
-	<td>Toyota</td>
-	<td>Corolla</td>
-	<td>Prata</td>
-	<td>2.0</td>
-      <tr>
-      <tr>
-	<td>1</td>
-	<td>Toyota</td>
-	<td>Corolla</td>
-	<td>Prata</td>
-	<td>2.0</td>
+      <tr ng-repeat="item in list">
+	<td>{{item.id}}</td>
+	<td>{{item.model_info.model_type}}</td>
+	<td>{{item.model_info.auto_maker_info.name}}</td>
+	<td>{{item.model_info.name}}</td>
+	<td>{{item.model_info.year}}</td>
+	<td>{{item.color}}</td>
+	<td>{{item.engine}}</td>
+	<td><input class="btn btn-success btn-xs" type="button" value="Editar" ng-click="edit(item)"> <input class="btn btn-danger btn-xs" type="button" value="Apagar" ng-click="deleteConfirm(item)"></td>
       <tr>
     </table>
   </div>
@@ -90,3 +81,51 @@
   </div> <!-- / Left sidebar -->
 
 </div>
+
+
+<div class="modal fade" id="newVehicleModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form ng-submit="save(vehicle)">
+	<div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" ng-hide="vehicle.id">Novo Veículo</h4>
+	  <h4 class="modal-title" ng-show="vehicle.id">Editar Veículo "{{vehicle.name}}"</h4>
+	</div>
+	<div class="modal-body">
+	  <div class="row">
+	    <div class="col-md-12">
+	      <div class="form-group">
+		<label for="inputName">Modelo</label>
+		<input type="text" class="form-control" placeholder="" required="true" ng-model="vehicle.model">
+	      </div>
+	      <div class="form-group">
+		<label for="inputName">Cor</label>
+		<input type="text" class="form-control" placeholder="" required="true" ng-model="vehicle.color">
+	      </div>
+	      <div class="form-group">
+		<label for="inputName">Quilometragem</label>
+		<input type="text" class="form-control" placeholder="" required="true" ng-model="vehicle.mileage">
+	      </div>
+	      <div class="form-group">
+		<label for="inputName">Motor</label>
+		<input type="text" class="form-control" placeholder="" required="true" ng-model="vehicle.engine">
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	<div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+          <button type="submit" class="btn btn-primary">Gravar</button>
+	</div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<modal-delete-item
+   modal-id="modalDeleteVehicle"
+   entity="Veiculo"
+   name="{{vehicle.id}}"
+   item="vehicle"
+   on-confirm="delete(vehicle)"></modal-delete-item>

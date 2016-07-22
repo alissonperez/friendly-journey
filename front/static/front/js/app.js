@@ -110,6 +110,30 @@
 	};
     });
 
+    // Vehicle provider
+    app.provider('Vehicle', function VehicleProvider(){
+	var baseUrl = '/api/v1/vehicles/';
+
+	this.$get = function($http) {
+	    return {
+		all: function(type) {
+		    return $http.get(baseUrl);
+		},
+		save: function(vehicle) {
+		    if (vehicle.id) {
+			return $http.patch(baseUrl + vehicle.id + '/', vehicle);
+		    }
+		    else {
+			return $http.post(baseUrl, vehicle);
+		    }
+		},
+		delete: function(vehicle) {
+		    return $http.delete(baseUrl + vehicle.id + '/');
+		}
+	    }
+	};
+    });
+
     // Rotas
     app.config(function($stateProvider, $urlRouterProvider) {
 	// Rota default
@@ -118,7 +142,41 @@
 	$stateProvider
 	    .state('vehicles', {
 		url: "/veiculos",
-		templateUrl: suJs('templates/contents/vehicles.html')
+		templateUrl: suJs('templates/contents/vehicles.html'),
+		controller: ['$scope', 'Vehicle', function($scope, Vehicle) {
+		    $scope.list = [];
+
+		    function load_items() {
+			Vehicle.all().success(function(data){
+			    $scope.list = data;
+			});
+		    }
+
+		    load_items();
+
+		    $scope.showNew = function(){
+			$("#newVehicleModal").modal();
+		    };
+
+		    $scope.save = function(vehicle) {
+			Vehicle.save(vehicle).success(function(data){
+			    $("#newVehicleModal").modal('hide');
+			    load_items();
+			});
+		    };
+
+		    $scope.deleteConfirm = function(vehicle) {
+			$scope.vehicle = vehicle;
+			$("#modalDeleteVehicle").modal();
+		    }
+
+		    $scope.delete = function(vehicle) {
+			$("#modalDeleteVehicle").modal('hide');
+			Vehicle.delete(vehicle).success(function(data){
+			    load_items();
+			});
+		    };
+		}]
 	    })
 	    .state('auto-makers', {
 		url: "/montadoras",
