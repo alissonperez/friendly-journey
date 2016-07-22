@@ -13,13 +13,15 @@
     <table class="table">
       <thead>
 	<th class="col-md-1">ID</th>
-	<th class="col-md-6">Modelo</th>
+	<th class="col-md-2">Tipo</th>
+	<th class="col-md-4">Modelo</th>
 	<th class="col-md-1">Ano</th>
 	<th class="col-md-2">Montadora</th>
 	<th class="col-md-2">&nbsp;</th>
       </thead>
       <tr ng-repeat="item in list">
 	<td>{{item.id}}</td>
+	<td>{{item.model_type | display_type}}</td>
 	<td>{{item.name}}</td>
 	<td>{{item.year}}</td>
 	<td>{{item.auto_maker_info.id}} - {{item.auto_maker_info.name}}</td>

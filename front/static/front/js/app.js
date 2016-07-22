@@ -60,6 +60,32 @@
 	};
     });
 
+    app.provider('VehicleModelType', function VehicleModelTypeProvider(){
+	this.$get = function() {
+	    return {
+		all: function() {
+		    return [
+			{id: 'car', name: 'Carro'},
+			{id: 'motorcycle', name: 'Moto'}
+		    ];
+		}
+	    };
+	};
+    });
+
+    app.filter('display_type', function(VehicleModelType) {
+	var model_types = VehicleModelType.all();
+	return function(input) {
+	    for (var i=0; i < model_types.length; i++) {
+		if (model_types[i].id == input) {
+		    return model_types[i].name;
+		}
+	    }
+
+	    return input;
+	};
+    });
+
     // VehicleModel provider
     app.provider('VehicleModel', function AutoMakerProvider(){
 	var baseUrl = '/api/v1/models/';
@@ -141,9 +167,10 @@
 	    .state('models', {
 		url: '/modelos',
 		templateUrl: suJs('templates/contents/models.html'),
-		controller: ['$scope', 'VehicleModel', 'AutoMaker', function($scope, VehicleModel, AutoMaker){
+		controller: ['$scope', 'VehicleModel', 'VehicleModelType', 'AutoMaker', function($scope, VehicleModel, VehicleModelType, AutoMaker){
 		    $scope.list = [];
 		    $scope.auto_makers = [];
+		    $scope.model_types = VehicleModelType.all();
 
 		    AutoMaker.all().success(function(data){
 			$scope.auto_makers = data;
