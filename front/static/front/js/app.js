@@ -87,7 +87,7 @@
     });
 
     // VehicleModel provider
-    app.provider('VehicleModel', function AutoMakerProvider(){
+    app.provider('VehicleModel', function VehicleModelProvider(){
 	var baseUrl = '/api/v1/models/';
 
 	this.$get = function($http) {
