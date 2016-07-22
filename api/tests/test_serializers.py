@@ -49,7 +49,8 @@ class VehicleModelSerializerTestCase(TestCase):
         model = factories.VehicleModelFactory()
         serializer = sls.VehicleModelSerializer(model)
 
-        expected_fields = {'id', 'auto_maker', 'year', 'name'}
+        expected_fields = {'id', 'auto_maker', 'auto_maker_info',
+                           'year', 'name', 'model_type'}
         self.assertEqual(set(dict(serializer.data).keys()), expected_fields)
 
     def test_data_must_be_with_expected_data(self):
@@ -59,6 +60,7 @@ class VehicleModelSerializerTestCase(TestCase):
         self.assertEqual(serializer.data['id'], model.id)
         self.assertEqual(serializer.data['name'], model.name)
         self.assertEqual(serializer.data['year'], model.year)
+        self.assertEqual(serializer.data['model_type'], model.model_type)
         self.assertEqual(serializer.data['auto_maker'], model.auto_maker_id)
 
         automaker_serializer = sls.AutoMakerSerializer(model.auto_maker)
@@ -69,7 +71,8 @@ class VehicleModelSerializerTestCase(TestCase):
         data = dict(
             year=1997,
             name='Corsa',
-            auto_maker=auto_maker.id
+            auto_maker=auto_maker.id,
+            model_type=models.VehicleModel.TYPE_CAR
         )
 
         serializer = sls.VehicleModelSerializer(data=data)
