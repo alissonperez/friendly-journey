@@ -67,7 +67,7 @@ class VehicleModelEndpointTestCase(TestCase):
         self.c = Client()
         self.list_url = reverse('api:vehiclemodel-list')
 
-    def test_get_must_return_list_of_all_vehicles(self):
+    def test_get_must_return_list_of_all_models(self):
         response = self.c.get(self.list_url)
 
         self.assertEqual(response.status_code, 200)
@@ -110,3 +110,89 @@ class VehicleModelEndpointTestCase(TestCase):
         self.assertEqual(response.status_code, 204)
 
         self.assertIsNone(models.VehicleModel.objects.filter(id=model.id).first())
+
+
+class VehicleEndpointTestCase(TestCase):
+
+    def setUp(self):
+        self.cars = []
+        for i in range(2):
+            self.cars.append(
+                factories.VehicleFactory(model__model_type=models.VehicleModel.TYPE_CAR))
+
+        self.motocycles = []
+        for i in range(2):
+            self.motocycles.append(
+                factories.VehicleFactory(model__model_type=models.VehicleModel.TYPE_MOTOCYCLE))
+
+        self.c = Client()
+        self.list_url = reverse('api:vehicle-list')
+
+    def test_get_must_return_list_of_all_vehicles(self):
+        response = self.c.get(self.list_url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_with_type_car_return_correct_list(self):
+        url = '{}?type=car'.format(self.list_url)
+        response = self.c.get(url)
+        self.assertEqual(response.status_code, 200)
+
+        self.assertEqual(len(response.data), len(self.cars))
+
+        ids = {i['id'] for i in response.data}
+        expected_ids = {i.id for i in self.cars}
+        self.assertEqual(ids, expected_ids)
+
+    def test_get_with_type_motocycle_return_correct_list(self):
+        url = '{}?type=motorcycle'.format(self.list_url)
+        response = self.c.get(url)
+        self.assertEqual(response.status_code, 200)
+
+        self.assertEqual(len(response.data), len(self.motocycles))
+
+        ids = {i['id'] for i in response.data}
+        expected_ids = {i.id for i in self.motocycles}
+        self.assertEqual(ids, expected_ids)
+
+    def test_call_post_must_create_an_item(self):
+        model = factories.VehicleModelFactory()
+
+        data = dict(
+            model=model.id,
+            color='red',
+            mileage=144000,
+            engine=1000
+        )
+
+        response = self.c.post(self.list_url, data=data)
+        self.assertEqual(response.status_code, 201)
+
+        models.Vehicle.objects.get(model=model, color='red',
+                                   mileage=144000, engine=1000)
+
+    def test_call_patch_must_update_an_item(self):
+        vehicle = self.cars[0]
+
+        new_mileage = vehicle.mileage + 1000
+
+        data = dict(
+            mileage=new_mileage
+        )
+
+        url = reverse('api:vehicle-detail', args=[vehicle.id])
+        response = self.c.patch(url, data=json.dumps(data),
+                                content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+
+        vehicle.refresh_from_db()
+        self.assertEqual(vehicle.mileage, new_mileage)
+
+    def test_call_delete_must_delete_an_item(self):
+        vehicle = self.cars[0]
+
+        url = reverse('api:vehicle-detail', args=[vehicle.id])
+        response = self.c.delete(url)
+
+        self.assertEqual(response.status_code, 204)
+
+        self.assertIsNone(models.Vehicle.objects.filter(id=vehicle.id).first())
