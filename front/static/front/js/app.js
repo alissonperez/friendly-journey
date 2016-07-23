@@ -92,8 +92,8 @@
 
 	this.$get = function($http) {
 	    return {
-		all: function() {
-		    return $http.get(baseUrl);
+		all: function(params) {
+		    return $http.get(baseUrl, {'params': params});
 		},
 		save: function(automaker) {
 		    if (automaker.id) {
@@ -116,8 +116,8 @@
 
 	this.$get = function($http) {
 	    return {
-		all: function(type) {
-		    return $http.get(baseUrl);
+		all: function(filters) {
+		    return $http.get(baseUrl, {'params': filters});
 		},
 		save: function(vehicle) {
 		    if (vehicle.id) {
@@ -143,11 +143,67 @@
 	    .state('vehicles', {
 		url: "/veiculos",
 		templateUrl: suJs('templates/contents/vehicles.html'),
-		controller: ['$scope', 'Vehicle', function($scope, Vehicle) {
+		controller: ['$scope', 'Vehicle', 'AutoMaker', 'VehicleModel', function($scope, Vehicle, AutoMaker, VehicleModel) {
 		    $scope.list = [];
 
+		    $scope.color_list = [
+			{'id': 'red', 'name': 'Vermelho'},
+			{'id': 'blue', 'name': 'Azul'},
+			{'id': 'green', 'name': 'Verde'},
+			{'id': 'white', 'name': 'Branco'},
+			{'id': 'grey', 'name': 'Cinza'},
+			{'id': 'black', 'name': 'Preto'},
+		    ];
+
+		    $scope.filters = {};
+
+		    $scope.$watch('filters.auto_maker', function HandleChanges(newValue, oldValue){
+			loadModels($scope.filters, function(data){
+			    $scope.model_list = data;
+			});
+		    });
+
+		    $scope.$watch('filters.type', function HandleChanges(newValue, oldValue){
+			loadModels($scope.filters, function(data){
+			    $scope.model_list = data;
+			});
+		    });
+
+		    $scope.filterChanged = function() {
+			for (var key in $scope.filters) {
+			    if ($scope.filters[key] == "") {
+				delete $scope.filters[key];
+			    }
+			}
+
+			load_items();
+		    };
+
+		    $scope.auto_maker_list = [];
+		    AutoMaker.all().success(function(data){
+			$scope.auto_maker_list = data;
+		    });
+
+		    $scope.model_list = []
+		    function loadModels(new_params, callback) {
+			var params = {}
+
+			if (new_params.hasOwnProperty('type') && new_params['type'] !== "") {
+			    params['type'] = new_params['type'];
+			}
+
+			if (new_params.hasOwnProperty('auto_maker') && new_params['auto_maker'] !== "") {
+			    params['auto_maker'] = new_params['auto_maker'];
+			}
+
+			VehicleModel.all(params).success(callback);
+		    }
+
+		    loadModels($scope.filters, function(data){
+			$scope.model_list = data;
+		    });
 		    function load_items() {
-			Vehicle.all().success(function(data){
+			Vehicle.all($scope.filters).success(function(data){
 			    $scope.list = data;
 			});
 		    }
