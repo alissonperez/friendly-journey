@@ -84,6 +84,22 @@ class VehicleModelEndpointTestCase(TestCase):
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['id'], model.id)
 
+    def test_get_with_type_return_correct_list(self):
+        model = self.vehicle_models[0]
+        url = '{}?type={}'.format(
+            self.list_url, model.model_type)
+
+        response = self.c.get(url)
+
+        expected = set(models.VehicleModel.objects.filter(
+            model_type=model.model_type).values_list('id', flat=True))
+
+        result = {i['id'] for i in response.data}
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), len(expected))
+        self.assertEqual(result, expected)
+
     def test_post_must_create_a_vehicle_model(self):
         auto_maker = self.vehicle_models[0].auto_maker
         data = dict(

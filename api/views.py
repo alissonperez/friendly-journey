@@ -19,6 +19,10 @@ class VehicleModelViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(
                 auto_maker_id=self.request.query_params['auto_maker'])
 
+        if 'type' in self.request.query_params:
+            queryset = queryset.filter(
+                model_type=self.request.query_params['type'])
+
         return queryset
 
 
