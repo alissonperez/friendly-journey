@@ -73,6 +73,17 @@ class VehicleModelEndpointTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 3)
 
+    def test_get_with_automaker_return_correct_list(self):
+        model = self.vehicle_models[0]
+        url = '{}?auto_maker={}'.format(
+            self.list_url, model.auto_maker_id)
+
+        response = self.c.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['id'], model.id)
+
     def test_post_must_create_a_vehicle_model(self):
         auto_maker = self.vehicle_models[0].auto_maker
         data = dict(

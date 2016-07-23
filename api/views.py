@@ -12,6 +12,15 @@ class VehicleModelViewSet(viewsets.ModelViewSet):
     queryset = models.VehicleModel.objects.all()
     serializer_class = serializers.VehicleModelSerializer
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        if 'auto_maker' in self.request.query_params:
+            queryset = queryset.filter(
+                auto_maker_id=self.request.query_params['auto_maker'])
+
+        return queryset
+
 
 class VehicleViewSet(viewsets.ModelViewSet):
     queryset = models.Vehicle.objects.all()
