@@ -154,6 +154,82 @@ class VehicleEndpointTestCase(TestCase):
         expected_ids = {i.id for i in self.motocycles}
         self.assertEqual(ids, expected_ids)
 
+    def test_get_with_automaker_return_correct_list(self):
+        car = self.cars[0]
+        url = '{}?auto_maker={}'.format(self.list_url, car.model.auto_maker_id)
+        response = self.c.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['id'], car.id)
+
+    def test_get_with_model_return_correct_list(self):
+        car = self.cars[0]
+        url = '{}?model={}'.format(self.list_url, car.model_id)
+        response = self.c.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['id'], car.id)
+
+    def test_get_with_color_return_correct_list(self):
+        car = self.cars[0]
+        url = '{}?color={}'.format(self.list_url, car.color)
+        response = self.c.get(url)
+
+        self.assertEqual(response.status_code, 200)
+
+        expected = {i.id for i in models.Vehicle.objects.filter(
+            color=car.color)}
+
+        result_ids = {i['id'] for i in response.data}
+
+        self.assertEqual(result_ids, expected)
+
+    def test_get_with_year_range_return_correct_list(self):
+        car = self.cars[0]
+        start, end = car.model.year - 1, car.model.year + 1
+
+        expected = {i.id for i in  models.Vehicle.objects.filter(
+            model__year__gte=start,
+            model__year__lte=end)}
+
+        url = '{}?year_start={}&year_end={}'.format(
+            self.list_url, start, end)
+        response = self.c.get(url)
+
+        ids_result = {i['id'] for i in response.data}
+        self.assertEqual(ids_result, expected)
+    def test_get_with_engine_range_return_correct_list(self):
+        car = self.cars[0]
+        start, end = car.engine - 100, car.engine + 100
+
+        expected = {i.id for i in  models.Vehicle.objects.filter(
+            engine__gte=start,
+            engine__lte=end)}
+
+        url = '{}?engine_start={}&engine_end={}'.format(
+            self.list_url, start, end)
+        response = self.c.get(url)
+
+        ids_result = {i['id'] for i in response.data}
+        self.assertEqual(ids_result, expected)
+
+    def test_get_with_mileage_range_return_correct_list(self):
+        car = self.cars[0]
+        start, end = car.mileage - 500, car.mileage + 500
+
+        expected = {i.id for i in  models.Vehicle.objects.filter(
+            mileage__gte=start,
+            mileage__lte=end)}
+
+        url = '{}?mileage_start={}&mileage_end={}'.format(
+            self.list_url, start, end)
+        response = self.c.get(url)
+
+        ids_result = {i['id'] for i in response.data}
+        self.assertEqual(ids_result, expected)
+
     def test_call_post_must_create_an_item(self):
         model = factories.VehicleModelFactory()
 
