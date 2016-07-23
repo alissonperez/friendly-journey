@@ -110,6 +110,47 @@
 	};
     });
 
+    app.provider('VehicleColor', function VehicleColorProvider(){
+	this.$get = function() {
+	    return {
+		all: function() {
+		    return [
+			{'id': 'red', 'name': 'Vermelho'},
+			{'id': 'blue', 'name': 'Azul'},
+			{'id': 'green', 'name': 'Verde'},
+			{'id': 'white', 'name': 'Branco'},
+			{'id': 'grey', 'name': 'Cinza'},
+			{'id': 'black', 'name': 'Preto'},
+		    ];
+		}
+	    };
+	};
+    });
+
+    app.filter('displayColor', function(VehicleColor) {
+	var colors = VehicleColor.all();
+
+	return function(input) {
+	    for (var i=0; i < colors.length; i++) {
+		if (colors[i].id == input) {
+		    return colors[i].name;
+		}
+	    }
+
+	    return input;
+	};
+    });
+
+    app.filter('displayEngine', function() {
+	return function(input, type) {
+	    if (type == 'car') {
+		return (input / 1000).toFixed(1);
+	    }
+
+	    return input;
+	};
+    });
+
     // Vehicle provider
     app.provider('Vehicle', function VehicleProvider(){
 	var baseUrl = '/api/v1/vehicles/';
@@ -143,19 +184,13 @@
 	    .state('vehicles', {
 		url: "/veiculos",
 		templateUrl: suJs('templates/contents/vehicles.html'),
-		controller: ['$scope', 'Vehicle', 'AutoMaker', 'VehicleModel', function($scope, Vehicle, AutoMaker, VehicleModel) {
+		controller: ['$scope', 'Vehicle', 'AutoMaker', 'VehicleModel', 'VehicleColor', function($scope, Vehicle, AutoMaker, VehicleModel, VehicleColor) {
 		    $scope.list = [];
+		    $scope.model_list_to_add = [];
 
-		    $scope.color_list = [
-			{'id': 'red', 'name': 'Vermelho'},
-			{'id': 'blue', 'name': 'Azul'},
-			{'id': 'green', 'name': 'Verde'},
-			{'id': 'white', 'name': 'Branco'},
-			{'id': 'grey', 'name': 'Cinza'},
-			{'id': 'black', 'name': 'Preto'},
-		    ];
+		    $scope.color_list = VehicleColor.all();
 
-		    $scope.filters = {};
+		    $scope.filters = angular.fromJson(sessionStorage.vehiclesFilters) || {};
 
 		    $scope.$watch('filters.auto_maker', function HandleChanges(newValue, oldValue){
 			loadModels($scope.filters, function(data){
@@ -169,12 +204,20 @@
 			});
 		    });
 
+		    $scope.$watch('vehicle.auto_maker', function HandleChanges(newValue, oldValue){
+			loadModels({'auto_maker': newValue}, function(data){
+			    $scope.model_list_to_add = data;
+			});
+		    });
+
 		    $scope.filterChanged = function() {
 			for (var key in $scope.filters) {
 			    if ($scope.filters[key] == "") {
 				delete $scope.filters[key];
 			    }
 			}
+
+			sessionStorage.vehiclesFilters = angular.toJson($scope.filters);
 
 			load_items();
 		    };
@@ -202,6 +245,11 @@
 		    loadModels($scope.filters, function(data){
 			$scope.model_list = data;
 		    });
+
+		    loadModels({}, function(data){
+			$scope.model_list_to_add = data;
+		    });
+
 		    function load_items() {
 			Vehicle.all($scope.filters).success(function(data){
 			    $scope.list = data;
@@ -211,7 +259,14 @@
 		    load_items();
 
 		    $scope.showNew = function(){
+			$scope.vehicle = {};
 			$("#newVehicleModal").modal();
+		    };
+
+		    $scope.edit = function(vehicle){
+			vehicle.auto_maker = vehicle.model_info.auto_maker;
+			$scope.vehicle = vehicle;
+			$('#newVehicleModal').modal();
 		    };
 
 		    $scope.save = function(vehicle) {

@@ -25,12 +25,12 @@
       </thead>
       <tr ng-repeat="item in list">
 	<td>{{item.id}}</td>
-	<td>{{item.model_info.model_type}}</td>
+	<td>{{item.model_info.model_type|display_type}}</td>
 	<td>{{item.model_info.auto_maker_info.name}}</td>
 	<td>{{item.model_info.name}}</td>
 	<td>{{item.model_info.year}}</td>
-	<td>{{item.color}}</td>
-	<td>{{item.engine}}</td>
+	<td>{{item.color|displayColor}}</td>
+	<td>{{item.engine|displayEngine:item.model_info.model_type}}</td>
 	<td>{{item.mileage}}</td>
 	<td><input class="btn btn-success btn-xs" type="button" value="Editar" ng-click="edit(item)"> <input class="btn btn-danger btn-xs" type="button" value="Apagar" ng-click="deleteConfirm(item)"></td>
       <tr>
@@ -124,12 +124,16 @@
 	  <div class="row">
 	    <div class="col-md-12">
 	      <div class="form-group">
+		<label for="inputName">Montadora</label>
+		<select class="form-control" ng-model="vehicle.auto_maker" ng-options="i.id as i.name for i in auto_maker_list"></select>
+	      </div>
+	      <div class="form-group">
 		<label for="inputName">Modelo</label>
-		<input type="text" class="form-control" placeholder="" required="true" ng-model="vehicle.model">
+		<select ng-disabled="! vehicle.auto_maker" class="form-control" ng-model="vehicle.model" ng-options="i.id as i.name + ' ' + i.year for i in model_list_to_add"></select>
 	      </div>
 	      <div class="form-group">
 		<label for="inputName">Cor</label>
-		<input type="text" class="form-control" placeholder="" required="true" ng-model="vehicle.color">
+		<select class="form-control" ng-model="vehicle.color" ng-options="i.id as i.name for i in color_list"></select>
 	      </div>
 	      <div class="form-group">
 		<label for="inputName">Quilometragem</label>
