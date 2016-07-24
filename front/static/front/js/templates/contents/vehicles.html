@@ -17,9 +17,7 @@
 	<th>Tipo</th>
 	<th>Montadora</th>
 	<th>Modelo</th>
-	<th>Ano</th>
 	<th>Cor</th>
-	<th>Motor</th>
 	<th>Quilometragem</th>
 	<th>&nbsp;</th>
       </thead>
@@ -27,10 +25,8 @@
 	<td>{{item.id}}</td>
 	<td>{{item.model_info.model_type|displayType}}</td>
 	<td>{{item.model_info.auto_maker_info.name}}</td>
-	<td>{{item.model_info.name}}</td>
-	<td>{{item.model_info.year}}</td>
+	<td>{{item.model_info.name}} {{item.model_info.year}} {{item.engine|displayEngine}}</td>
 	<td>{{item.color|displayColor}}</td>
-	<td>{{item.engine|displayEngine}}</td>
 	<td>{{item.mileage}}</td>
 	<td><input class="btn btn-success btn-xs" type="button" value="Editar" ng-click="edit(item)"> <input class="btn btn-danger btn-xs" type="button" value="Apagar" ng-click="deleteConfirm(item)"></td>
       <tr>
