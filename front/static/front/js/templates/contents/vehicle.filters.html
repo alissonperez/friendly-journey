@@ -1,0 +1,62 @@
+<h4>Filtrar</h4>
+<form>
+  <div class="form-group">
+    <label for="filter-type-filter">Tipo</label>
+    <select id="filter-type-filter" name="filter-type" class="form-control" ng-model="filters.type" ng-change="update({'filters': filters})">
+      <option value="">&nbsp;</option>
+      <option value="car">Carro</option>
+      <option value="motorcycle">Moto</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="auto-maker-filter">Montadora</label>
+    <select id="auto-maker-filter" class="form-control" ng-change="update({'filters': filters})" ng-model="filters.auto_maker" ng-options="i.id as i.name for i in auto_maker_list">
+      <option value=""></option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="model-filter">Modelo</label>
+    <select id="model-filter" class="form-control" ng-change="update({'filters': filters})" ng-model="filters.model" ng-options="i.id as i.name + ' ' + i.year for i in model_list">
+      <option value=""></option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="color-filter">Cor</label>
+    <select id="color-filter" class="form-control" ng-change="update({'filters': filters})" ng-model="filters.color" ng-options="i.id as i.name for i in color_list">
+      <option value=""></option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label>Ano</label>
+    <div class="row">
+      <div class="col-xs-6">
+	<input type="number" class="form-control input-sm" placeholder="De" ng-model="filters.year_start" ng-blur="update({'filters': filters})">
+      </div>
+      <div class="col-xs-6">
+	<input type="number" class="form-control input-sm" placeholder="Ate" ng-model="filters.year_end" ng-blur="update({'filters': filters})">
+      </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <label>Kilometragem</label>
+    <div class="row">
+      <div class="col-xs-6">
+	<input type="number" class="form-control input-sm" placeholder="De" ng-model="filters.mileage_start" ng-blur="update({'filters': filters})">
+      </div>
+      <div class="col-xs-6">
+	<input type="number" class="form-control input-sm" placeholder="Ate" ng-model="filters.mileage_end" ng-blur="update({'filters': filters})">
+      </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <label>Motor</label>
+    <div class="row">
+      <div class="col-xs-6">
+	<input type="number" class="form-control input-sm" placeholder="De" ng-model="filters.engine_start" ng-blur="update({'filters': filters})">
+      </div>
+      <div class="col-xs-6">
+	<input type="number" class="form-control input-sm" placeholder="Ate" ng-model="filters.engine_end" ng-blur="update({'filters': filters})">
+      </div>
+    </div>
+  </div>
+</form>

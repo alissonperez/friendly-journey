@@ -29,6 +29,56 @@
 	};
     });
 
+    app.directive('vehicleFilter', function(){
+	return {
+	    restrict: 'E',
+	    scope: {
+		filters: '=',
+		update: '&onUpdate'
+	    },
+	    templateUrl: suJs('templates/contents/vehicle.filters.html'),
+	    controller: ['$scope', 'AutoMaker', 'VehicleModel', 'VehicleColor', function($scope, AutoMaker, VehicleModel, VehicleColor) {
+		$scope.auto_maker_list = [];
+		AutoMaker.all().success(function(data){
+		    $scope.auto_maker_list = data;
+		});
+
+		$scope.$watch('filters.auto_maker', function HandleChanges(newValue, oldValue){
+		    console.log('Changed auto-maker');
+		    loadModels($scope.filters, function(data){
+		    	$scope.model_list = data;
+		    });
+		});
+
+		$scope.$watch('filters.type', function HandleChanges(newValue, oldValue){
+		    console.log('Changed type');
+		    loadModels($scope.filters, function(data){
+		    	$scope.model_list = data;
+		    });
+		});
+
+		$scope.model_list = [];
+		function loadModels(new_params, callback) {
+		    var params = {}
+
+		    if (new_params.hasOwnProperty('type') && new_params['type'] !== "") {
+			params['type'] = new_params['type'];
+		    }
+
+		    if (new_params.hasOwnProperty('auto_maker') && new_params['auto_maker'] !== "") {
+			params['auto_maker'] = new_params['auto_maker'];
+		    }
+
+		    VehicleModel.all(params).success(callback);
+		}
+
+		loadModels($scope.filters, function(data){
+		    $scope.model_list = data;
+		});
+	    }]
+	};
+    });
+
     app.directive('modalDeleteItem', function(){
 	return {
 	    restrict: 'AE',
@@ -100,6 +150,14 @@
 	this.$get = function($http) {
 	    return {
 		all: function(params) {
+		    if (params) {
+			for (key in params) {
+			    if (params[key] == "") {
+				delete params[key];
+			    }
+			}
+		    }
+
 		    return $http.get(baseUrl, {'params': params});
 		},
 		save: function(automaker) {
@@ -193,39 +251,26 @@
 		templateUrl: suJs('templates/contents/vehicles.html'),
 		controller: ['$scope', 'Vehicle', 'AutoMaker', 'VehicleModel', 'VehicleColor', function($scope, Vehicle, AutoMaker, VehicleModel, VehicleColor) {
 		    $scope.list = [];
-		    $scope.model_list_to_add = [];
+		    $scope.model_list = [];
 
 		    $scope.color_list = VehicleColor.all();
 
-		    $scope.filters = angular.fromJson(sessionStorage.vehiclesFilters) || {};
-
-		    $scope.$watch('filters.auto_maker', function HandleChanges(newValue, oldValue){
-			loadModels($scope.filters, function(data){
-			    $scope.model_list = data;
-			});
-		    });
-
-		    $scope.$watch('filters.type', function HandleChanges(newValue, oldValue){
-			loadModels($scope.filters, function(data){
-			    $scope.model_list = data;
-			});
-		    });
+		    $scope.filters = {};
 
 		    $scope.$watch('vehicle.auto_maker', function HandleChanges(newValue, oldValue){
-			loadModels({'auto_maker': newValue}, function(data){
-			    $scope.model_list_to_add = data;
+			VehicleModel.all({'auto_maker': newValue}).success(function(data){
+			    $scope.model_list = data;
 			});
 		    });
 
-		    $scope.filterChanged = function() {
-			for (var key in $scope.filters) {
-			    if ($scope.filters[key] == "") {
-				delete $scope.filters[key];
+		    $scope.filterChanged = function(filters) {
+			for (var key in filters) {
+			    if (filters[key] == "") {
+				delete filters[key];
 			    }
 			}
 
-			sessionStorage.vehiclesFilters = angular.toJson($scope.filters);
-
+			$scope.filters = filters;
 			load_items();
 		    };
 
@@ -235,26 +280,8 @@
 		    });
 
 		    $scope.model_list = []
-		    function loadModels(new_params, callback) {
-			var params = {}
-
-			if (new_params.hasOwnProperty('type') && new_params['type'] !== "") {
-			    params['type'] = new_params['type'];
-			}
-
-			if (new_params.hasOwnProperty('auto_maker') && new_params['auto_maker'] !== "") {
-			    params['auto_maker'] = new_params['auto_maker'];
-			}
-
-			VehicleModel.all(params).success(callback);
-		    }
-
-		    loadModels($scope.filters, function(data){
+		    VehicleModel.all().success(function(data){
 			$scope.model_list = data;
-		    });
-
-		    loadModels({}, function(data){
-			$scope.model_list_to_add = data;
 		    });
 
 		    function load_items() {
