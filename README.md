@@ -65,6 +65,7 @@ Observações gerais
 Melhorias
 -----------
 
+- Incluir testes no frontend.
 - Não permitir a inclusão de montadoras com o mesmo nome.
 - Verificar compatibilidade com Internet Explorer =/.
 - Incluir i18n.
