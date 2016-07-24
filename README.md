@@ -1,6 +1,17 @@
 Cadastro de carros
 ===================
 
+Instalacao
+-----------
+
+Requerimentos: Virtualenv com versao 3.4 do Python e SQLite3.
+
+Apos criar o virtualenv:
+
+```
+$ pip install -r requirements.txt
+```
+
 Populando o banco
 ------------------
 
