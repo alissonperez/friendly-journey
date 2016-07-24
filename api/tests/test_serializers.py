@@ -4,14 +4,19 @@ from api import serializers as sls
 from api import factories, models
 
 
-class AutoMakerSerializerTestCase(TestCase):
+class SerializerTestCase(TestCase):
+
+    def assertHasFields(self, serializer, expected_fields):
+        self.assertEqual(set(dict(serializer.data).keys()), set(expected_fields))
+
+
+class AutoMakerSerializerTestCase(SerializerTestCase):
 
     def test_data_must_have_expected_fields(self):
         automaker = factories.AutoMakerFactory()
         serializer = sls.AutoMakerSerializer(automaker)
 
-        expected_fields = {'id', 'name'}
-        self.assertEqual(set(dict(serializer.data).keys()), expected_fields)
+        self.assertHasFields(serializer, ['id', 'name'])
 
     def test_data_must_be_with_expected_data(self):
         automaker = factories.AutoMakerFactory()
@@ -43,15 +48,15 @@ class AutoMakerSerializerTestCase(TestCase):
         self.assertEqual(result.id, 1)
 
 
-class VehicleModelSerializerTestCase(TestCase):
+class VehicleModelSerializerTestCase(SerializerTestCase):
 
     def test_data_must_have_expected_fields(self):
         model = factories.VehicleModelFactory()
         serializer = sls.VehicleModelSerializer(model)
 
-        expected_fields = {'id', 'auto_maker', 'auto_maker_info',
-                           'year', 'name', 'model_type'}
-        self.assertEqual(set(dict(serializer.data).keys()), expected_fields)
+        expected_fields = ['id', 'auto_maker', 'auto_maker_info',
+                           'year', 'name', 'model_type']
+        self.assertHasFields(serializer, expected_fields)
 
     def test_data_must_be_with_expected_data(self):
         model = factories.VehicleModelFactory()
@@ -80,3 +85,22 @@ class VehicleModelSerializerTestCase(TestCase):
         result = serializer.save()
 
         self.assertIsInstance(result, models.VehicleModel)
+
+
+class VehicleSerializerTestCase(SerializerTestCase):
+
+    def test_data_must_have_expected_fields(self):
+        vehicle = factories.VehicleFactory()
+        serializer = sls.VehicleSerializer(vehicle)
+
+        expected_fields = ['id', 'color', 'model', 'mileage', 'engine', 'model_info']
+        self.assertHasFields(serializer, expected_fields)
+
+    def test_data_must_have_model_info_as_vehicle_model_serializer(self):
+        vehicle = factories.VehicleFactory()
+
+        serializer = sls.VehicleSerializer(vehicle)
+
+        model_serializer = sls.VehicleModelSerializer(vehicle.model)
+
+        self.assertEqual(serializer.data['model_info'], model_serializer.data)

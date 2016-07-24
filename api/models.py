@@ -20,3 +20,19 @@ class VehicleModel(models.Model):
     auto_maker = models.ForeignKey(AutoMaker)
     name = models.CharField(max_length=20)
     year = models.IntegerField()
+
+
+class Vehicle(models.Model):
+    COLORS = (
+        ('red', 'Vermelho'),
+        ('blue', 'Azul'),
+        ('green', 'Verde'),
+        ('white', 'Branco'),
+        ('grey', 'Cinza'),
+        ('black', 'Preto'),
+    )
+
+    model = models.ForeignKey(VehicleModel)
+    color = models.CharField(max_length=20, choices=COLORS)
+    mileage = models.IntegerField()
+    engine = models.IntegerField()

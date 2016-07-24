@@ -4,89 +4,56 @@
   </div>
 
   <div class="col-md-2">
-    <a class="btn btn-success col-md-12" href="#" role="button">Adicionar veiculo</a>
+    <a class="btn btn-success col-md-12" role="button" ng-click="showNew()">Adicionar veiculo</a>
   </div>
 </div>
 
 <div class="row">
-  <div class="col-md-12">
-    <ul class="nav nav-tabs">
-      <li role="presentation" class="active"><a href="#">Carros</a></li>
-      <li role="presentation"><a href="#">Motos</a></li>
-    </ul>
-  </div>
-</div>
 
-<div class="row">
   <div class="col-md-9">
-    <table class="table">
+    <table class="table" ng-show="list.length">
       <thead>
 	<th>ID</th>
+	<th>Tipo</th>
 	<th>Montadora</th>
 	<th>Modelo</th>
+	<th>Ano</th>
 	<th>Cor</th>
-	<th>Kilometragem</th>
+	<th>Motor</th>
+	<th>Quilometragem</th>
+	<th>&nbsp;</th>
       </thead>
-      <tr>
-	<td>1</td>
-	<td>Toyota</td>
-	<td>Corolla</td>
-	<td>Prata</td>
-	<td>2.0</td>
-      <tr>
-      <tr>
-	<td>1</td>
-	<td>Toyota</td>
-	<td>Corolla</td>
-	<td>Prata</td>
-	<td>2.0</td>
+      <tr ng-repeat="item in list">
+	<td>{{item.id}}</td>
+	<td>{{item.model_info.model_type|displayType}}</td>
+	<td>{{item.model_info.auto_maker_info.name}}</td>
+	<td>{{item.model_info.name}}</td>
+	<td>{{item.model_info.year}}</td>
+	<td>{{item.color|displayColor}}</td>
+	<td>{{item.engine|displayEngine}}</td>
+	<td>{{item.mileage}}</td>
+	<td><input class="btn btn-success btn-xs" type="button" value="Editar" ng-click="edit(item)"> <input class="btn btn-danger btn-xs" type="button" value="Apagar" ng-click="deleteConfirm(item)"></td>
       <tr>
     </table>
+    <i ng-hide="list.length">Nenhum veiculo encontrato</i>
   </div>
 
   <div class="col-md-3"> <!-- Left sidebar -->
     <div class="container-fluid">
       <div class="row">
-	<h4>Filtrar</h4>
-	<form>
-	  <div class="form-group">
-	    <label for="exampleInputEmail1">Montadora</label>
-	    <input type="email" class="form-control input-sm" id="exampleInputEmail1" placeholder="Email">
-	  </div>
-	  <div class="form-group">
-	    <label for="exampleInputEmail1">Modelo</label>
-	    <input type="email" class="form-control input-sm" id="exampleInputEmail1" placeholder="Email">
-	  </div>
-	  <div class="form-group">
-	    <label for="exampleInputEmail1">Cor</label>
-	    <input type="email" class="form-control input-sm" id="exampleInputEmail1" placeholder="Email">
-	  </div>
-	  <div class="form-group">
-	    <label for="exampleInputEmail1">Kilometragem</label>
-	    <div class="row">
-	      <div class="col-xs-6">
-		<input type="email" class="form-control input-sm" id="exampleInputEmail1" placeholder="De">
-	      </div>
-	      <div class="col-xs-6">
-		<input type="email" class="form-control input-sm" id="exampleInputEmail1" placeholder="Ate">
-	      </div>
-	    </div>
-	  </div>
-	  <div class="form-group">
-	    <label for="exampleInputEmail1">Motor</label>
-	    <div class="row">
-	      <div class="col-xs-6">
-		<input type="email" class="form-control input-sm" id="exampleInputEmail1" placeholder="De">
-	      </div>
-	      <div class="col-xs-6">
-		<input type="email" class="form-control input-sm" id="exampleInputEmail1" placeholder="Ate">
-	      </div>
-	    </div>
-	  </div>
-	</form>
+	<vehicle-filter filters="filters" on-update="filterChanged(filters)"></vehicle-filter>
       </div>
-
     </div>
   </div> <!-- / Left sidebar -->
 
 </div>
+
+
+<manage-vehicle></manage-vehicle>
+
+<modal-delete-item
+   modal-id="modalDeleteVehicle"
+   entity="Veiculo"
+   name="{{vehicle.id}} - {{vehicle.model_info.auto_maker_info.name}} {{vehicle.model_info.name}} {{vehicle.model_info.year}}"
+   item="vehicle"
+   on-confirm="delete(vehicle)"></modal-delete-item>
