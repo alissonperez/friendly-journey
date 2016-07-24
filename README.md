@@ -1,6 +1,35 @@
 Cadastro de carros
 ===================
 
+Populando o banco
+------------------
+
+Para inicializar o banco (executar migracoes e popular a base):
+
+```
+$ make initdb
+```
+
+Executando a aplicacao
+------------------------
+
+Inicialize o servidor local:
+
+```
+$ make serve
+```
+
+Acesse http://localhost:8000/
+
+Executando tests backend
+-------------------------
+
+Execute:
+
+```
+$ make test
+```
+
 Observacoes gerais
 -------------------
 
