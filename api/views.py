@@ -9,7 +9,7 @@ class AutoMakerViewSet(viewsets.ModelViewSet):
 
 
 class VehicleModelViewSet(viewsets.ModelViewSet):
-    queryset = models.VehicleModel.objects.all()
+    queryset = models.VehicleModel.objects.all().select_related('auto_maker')
     serializer_class = serializers.VehicleModelSerializer
 
     def get_queryset(self):
@@ -27,7 +27,7 @@ class VehicleModelViewSet(viewsets.ModelViewSet):
 
 
 class VehicleViewSet(viewsets.ModelViewSet):
-    queryset = models.Vehicle.objects.all()
+    queryset = models.Vehicle.objects.all().select_related('model', 'model__auto_maker')
     serializer_class = serializers.VehicleSerializer
 
     def get_queryset(self):
