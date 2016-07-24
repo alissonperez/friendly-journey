@@ -22,6 +22,13 @@
 	};
     });
 
+    app.directive('manageVehicle', function(){
+	return {
+	    restrict: 'E',
+	    templateUrl: suJs('templates/contents/vehicles.new.html'),
+	};
+    });
+
     app.directive('modalDeleteItem', function(){
 	return {
 	    restrict: 'AE',
