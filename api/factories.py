@@ -30,3 +30,11 @@ class VehicleFactory(modelFactory):
 
     class Meta:
         model = models.Vehicle
+
+
+class CarVehicleFactory(VehicleFactory):
+    engine = factory.fuzzy.FuzzyInteger(1000, 2200)
+
+
+class MotorCycleVehicleFactory(VehicleFactory):
+    engine = factory.fuzzy.FuzzyInteger(100, 950)
