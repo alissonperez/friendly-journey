@@ -1,6 +1,8 @@
 Cadastro de carros
 ===================
 
+Desenvolvido com base no desafio https://github.com/vivadecora/backend-teste.
+
 Instalação
 -----------
 
@@ -66,6 +68,7 @@ Melhorias
 -----------
 
 - Incluir testes no frontend.
+- As chamadas AJAX podem ser otimizadas utilizando um cache nos respectivos providers para evitar chamadas desnecessárias à API.
 - Não permitir a inclusão de montadoras com o mesmo nome.
 - Verificar compatibilidade com Internet Explorer =/.
 - Incluir i18n.
