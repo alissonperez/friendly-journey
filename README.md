@@ -30,6 +30,16 @@ Execute:
 $ make test
 ```
 
+### Verificando cobertura dos testes
+
+Execute:
+
+```
+$ make coverage
+```
+
+Em seguida, abra o arquivo `.htmlcov/index.html` em seu navegador.
+
 Observacoes gerais
 -------------------
 
