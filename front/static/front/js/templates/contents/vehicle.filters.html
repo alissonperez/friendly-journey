@@ -2,10 +2,8 @@
 <form>
   <div class="form-group">
     <label for="filter-type-filter">Tipo</label>
-    <select id="filter-type-filter" name="filter-type" class="form-control" ng-model="filters.type" ng-change="update({'filters': filters})">
+    <select id="filter-type-filter" name="filter-type" class="form-control" ng-model="filters.type" ng-change="update({'filters': filters})" ng-options="i.id as i.name for i in model_types">
       <option value="">&nbsp;</option>
-      <option value="car">Carro</option>
-      <option value="motorcycle">Moto</option>
     </select>
   </div>
   <div class="form-group">

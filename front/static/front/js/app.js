@@ -37,45 +37,32 @@
 		update: '&onUpdate'
 	    },
 	    templateUrl: suJs('templates/contents/vehicle.filters.html'),
-	    controller: ['$scope', 'AutoMaker', 'VehicleModel', 'VehicleColor', function($scope, AutoMaker, VehicleModel, VehicleColor) {
-		$scope.auto_maker_list = [];
-		AutoMaker.all().success(function(data){
-		    $scope.auto_maker_list = data;
-		});
+	    controller: [
+		'$scope', 'AutoMaker', 'VehicleModel', 'VehicleColor', 'VehicleModelType',
+		function($scope, AutoMaker, VehicleModel, VehicleColor, VehicleModelType) {
+		    $scope.model_types = VehicleModelType.all();
+		    $scope.color_list = VehicleColor.all();
 
-		$scope.$watch('filters.auto_maker', function HandleChanges(newValue, oldValue){
-		    console.log('Changed auto-maker');
-		    loadModels($scope.filters, function(data){
-		    	$scope.model_list = data;
+		    $scope.auto_maker_list = [];
+		    AutoMaker.all().success(function(data){
+			$scope.auto_maker_list = data;
 		    });
-		});
 
-		$scope.$watch('filters.type', function HandleChanges(newValue, oldValue){
-		    console.log('Changed type');
-		    loadModels($scope.filters, function(data){
-		    	$scope.model_list = data;
-		    });
-		});
-
-		$scope.model_list = [];
-		function loadModels(new_params, callback) {
-		    var params = {}
-
-		    if (new_params.hasOwnProperty('type') && new_params['type'] !== "") {
-			params['type'] = new_params['type'];
+		    $scope.model_list = [];
+		    function loadModels() {
+			VehicleModel.all($scope.filters).success(function(data){
+		    	    $scope.model_list = data;
+			});
 		    }
 
-		    if (new_params.hasOwnProperty('auto_maker') && new_params['auto_maker'] !== "") {
-			params['auto_maker'] = new_params['auto_maker'];
-		    }
+		    $scope.$watch('filters.auto_maker', function HandleChanges(newValue, oldValue){
+			loadModels();
+		    });
 
-		    VehicleModel.all(params).success(callback);
-		}
-
-		loadModels($scope.filters, function(data){
-		    $scope.model_list = data;
-		});
-	    }]
+		    $scope.$watch('filters.type', function HandleChanges(newValue, oldValue){
+			loadModels();
+		    });
+		}]
 	};
     });
 
