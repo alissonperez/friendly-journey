@@ -1,7 +1,7 @@
 <div class="modal fade" id="newVehicleModelModal" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <form ng-submit="save(vehicle_model)">
+      <form name="modelForm" ng-submit="modelForm.$valid && save(vehicle_model)">
 	<div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
           <h4 class="modal-title" ng-hide="vehicle_model.id">Novo modelo</h4>
@@ -10,30 +10,28 @@
 	<div class="modal-body">
 	  <div class="row">
 	    <div class="col-md-12">
-	      <div class="form-group">
-		<label for="inputName">Tipo</label>
-		<select ng-model="vehicle_model.model_type" class="form-control" ng-options="item.id as item.name for item in model_types">
-		</select>
+	      <div class="form-group" ng-class="{'has-error': modelForm.type.$invalid && modelForm.type.$dirty}">
+		<label for="model-type" class="control-label">Tipo</label>
+		<select id="model-type" name="type" ng-model="vehicle_model.model_type" class="form-control" ng-options="item.id as item.name for item in model_types" required><option value="">&nbsp;</option></select>
 	      </div>
-	      <div class="form-group">
-		<label for="inputName">Nome</label>
-		<input type="text" class="form-control" placeholder="" required="true" ng-model="vehicle_model.name">
+	      <div class="form-group" ng-class="{'has-error': modelForm.name.$invalid && modelForm.name.$dirty}">
+		<label for="model-name" class="control-label">Nome</label>
+		<input id="model-name" type="text" name="name" class="form-control" placeholder="" ng-model="vehicle_model.name" required>
 	      </div>
-	      <div class="form-group">
-		<label for="inputName">Ano</label>
-		<input type="text" class="form-control" placeholder="" required="true" ng-model="vehicle_model.year">
+	      <div class="form-group" ng-class="{'has-error': modelForm.year.$invalid && modelForm.year.$dirty}">
+		<label for="model-year" class="control-label">Ano</label>
+		<input id="model-year" type="number" name="year" class="form-control" placeholder="" ng-model="vehicle_model.year" required>
 	      </div>
-	      <div class="form-group">
-		<label for="inputName">Montadora</label>
-		<select ng-model="vehicle_model.auto_maker" class="form-control" ng-options="item.id as item.name for item in auto_makers">
-		</select>
+	      <div class="form-group" ng-class="{'has-error': modelForm.autoMaker.$invalid && modelForm.autoMaker.$dirty}">
+		<label for="model-auto-maker" class="control-label">Montadora</label>
+		<select id="model-auto-maker" name="autoMaker" ng-model="vehicle_model.auto_maker" class="form-control" ng-options="item.id as item.name for item in auto_makers" required><option value="">&nbsp;</option></select>
 	      </div>
 	    </div>
 	  </div>
 	</div>
 	<div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
-          <button type="submit" class="btn btn-primary">Gravar</button>
+          <button type="submit" class="btn btn-primary" ng-disabled="modelForm.$invalid">Gravar</button>
 	</div>
       </form>
     </div>
