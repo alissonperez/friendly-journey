@@ -33,8 +33,8 @@ class VehicleFactory(modelFactory):
 
 
 class CarVehicleFactory(VehicleFactory):
-    engine = factory.fuzzy.FuzzyInteger(1000, 2200)
+    engine = factory.fuzzy.FuzzyInteger(1000, 2200, 100)
 
 
 class MotorCycleVehicleFactory(VehicleFactory):
-    engine = factory.fuzzy.FuzzyInteger(100, 950)
+    engine = factory.fuzzy.FuzzyInteger(100, 950, 50)

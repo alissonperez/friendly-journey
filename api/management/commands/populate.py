@@ -66,7 +66,7 @@ class Command(BaseCommand):
         self._out_success('Criando motos')
         for motorcycle in motorcycles:
             for i in range(2):
-                factories.CarVehicleFactory(model=motorcycle)
+                factories.MotorCycleVehicleFactory(model=motorcycle)
 
         self._out_success('Veiculos criados!')
 
