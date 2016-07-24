@@ -262,23 +262,8 @@
 		    });
 
 		    $scope.filterChanged = function(filters) {
-			var new_filters = angular.copy(filters);
-
-			for (var key in new_filters) {
-			    if (new_filters[key] === "" || new_filters[key] === null || new_filters[key] === undefined) {
-				delete new_filters[key];
-			    }
-			}
-
-			if (new_filters.hasOwnProperty('engine_start')) {
-			    new_filters.engine_start = sanitizeEngine(new_filters.engine_start);
-			}
-
-			if (new_filters.hasOwnProperty('engine_end')) {
-			    new_filters.engine_end = sanitizeEngine(new_filters.engine_end);
-			}
-
-			load_items(new_filters);
+			$scope.filters = filters;
+			loadItems();
 		    };
 
 		    $scope.auto_maker_list = [];
@@ -291,13 +276,31 @@
 			$scope.model_list = data;
 		    });
 
-		    function load_items(filters) {
+		    function loadItems() {
+			var filters = angular.copy($scope.filters);
+
+			for (var key in filters) {
+			    if (filters[key] === "" || filters[key] === null || filters[key] === undefined) {
+				delete filters[key];
+			    }
+			}
+
+			if (filters.hasOwnProperty('engine_start')) {
+			    filters.engine_start = sanitizeEngine(filters.engine_start);
+			}
+
+			if (filters.hasOwnProperty('engine_end')) {
+			    filters.engine_end = sanitizeEngine(filters.engine_end);
+			}
+
+			console.log(filters);
+
 			Vehicle.all(filters).success(function(data){
 			    $scope.list = data;
 			});
 		    }
 
-		    load_items({});
+		    loadItems();
 
 		    $scope.showNew = function(){
 			$scope.vehicle = {};
@@ -318,7 +321,7 @@
 			vehicle.engine = sanitizeEngine(vehicle.engine);
 			Vehicle.save(vehicle).success(function(data){
 			    $("#newVehicleModal").modal('hide');
-			    load_items();
+			    loadItems();
 			});
 		    };
 
@@ -330,7 +333,7 @@
 		    $scope.delete = function(vehicle) {
 			$("#modalDeleteVehicle").modal('hide');
 			Vehicle.delete(vehicle).success(function(data){
-			    load_items();
+			    loadItems();
 			});
 		    };
 		}]
