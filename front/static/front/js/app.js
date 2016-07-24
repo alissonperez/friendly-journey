@@ -1,6 +1,22 @@
 (function(){
     var app = angular.module('autosApp', ['ui.router']);
 
+    function convertEngine(value) {
+	if (value >= 1000) {
+	    return (value / 1000).toFixed(1);
+	}
+
+	return value;
+    }
+
+    function sanitizeEngine(value) {
+	if (value >= 0 && value <= 10) {
+	    return Math.trunc(value * 1000);
+	}
+
+	return value;
+    }
+
     app.directive('navBar', function(){
 	return {
 	    restrict: 'AE',
@@ -193,16 +209,6 @@
 	};
     });
 
-    app.filter('displayEngine', function() {
-	return function(input, type) {
-	    if (type == 'car') {
-		return (input / 1000).toFixed(1);
-	    }
-
-	    return input;
-	};
-    });
-
     // Vehicle provider
     app.provider('Vehicle', function VehicleProvider(){
 	var baseUrl = '/api/v1/vehicles/';
@@ -227,6 +233,12 @@
 	};
     });
 
+    app.filter('displayEngine', function() {
+	return function(input) {
+	    return convertEngine(input);
+	};
+    });
+
     // Rotas
     app.config(function($stateProvider, $urlRouterProvider) {
 	// Rota default
@@ -238,7 +250,6 @@
 		templateUrl: suJs('templates/contents/vehicles.html'),
 		controller: ['$scope', 'Vehicle', 'AutoMaker', 'VehicleModel', 'VehicleColor', function($scope, Vehicle, AutoMaker, VehicleModel, VehicleColor) {
 		    $scope.list = [];
-		    $scope.model_list = [];
 
 		    $scope.color_list = VehicleColor.all();
 
@@ -251,14 +262,25 @@
 		    });
 
 		    $scope.filterChanged = function(filters) {
-			for (var key in filters) {
-			    if (filters[key] == "") {
-				delete filters[key];
+			var new_filters = angular.copy(filters);
+
+			for (var key in new_filters) {
+			    if (new_filters[key] === ""
+				|| new_filters[key] === null
+				|| new_filters[key] === undefined) {
+				delete new_filters[key];
 			    }
 			}
 
-			$scope.filters = filters;
-			load_items();
+			if (new_filters.hasOwnProperty('engine_start')) {
+			    new_filters['engine_start'] = sanitizeEngine(new_filters['engine_start']);
+			}
+
+			if (new_filters.hasOwnProperty('engine_end')) {
+			    new_filters['engine_end'] = sanitizeEngine(new_filters['engine_end'])
+			}
+
+			load_items(new_filters);
 		    };
 
 		    $scope.auto_maker_list = [];
@@ -271,13 +293,13 @@
 			$scope.model_list = data;
 		    });
 
-		    function load_items() {
-			Vehicle.all($scope.filters).success(function(data){
+		    function load_items(filters) {
+			Vehicle.all(filters).success(function(data){
 			    $scope.list = data;
 			});
 		    }
 
-		    load_items();
+		    load_items({});
 
 		    $scope.showNew = function(){
 			$scope.vehicle = {};
@@ -285,12 +307,17 @@
 		    };
 
 		    $scope.edit = function(vehicle){
+			vehicle = angular.copy(vehicle);
+
 			vehicle.auto_maker = vehicle.model_info.auto_maker;
+			vehicle.engine = Number.parseFloat(convertEngine(vehicle.engine));
+
 			$scope.vehicle = vehicle;
 			$('#newVehicleModal').modal();
 		    };
 
 		    $scope.save = function(vehicle) {
+			vehicle.engine = sanitizeEngine(vehicle.engine);
 			Vehicle.save(vehicle).success(function(data){
 			    $("#newVehicleModal").modal('hide');
 			    load_items();
