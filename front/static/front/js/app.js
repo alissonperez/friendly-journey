@@ -116,7 +116,7 @@
 		delete: function(automaker) {
 		    return $http.delete(baseUrl + automaker.id + '/', automaker);
 		}
-	    }
+	    };
 	};
     });
 
@@ -141,8 +141,8 @@
 	    return {
 		all: function(params) {
 		    if (params) {
-			for (key in params) {
-			    if (params[key] == "") {
+			for (var key in params) {
+			    if (params[key] === "" || params[key] === null || params[key] === undefined) {
 				delete params[key];
 			    }
 			}
@@ -161,7 +161,7 @@
 		delete: function(automaker) {
 		    return $http.delete(baseUrl + automaker.id + '/', automaker);
 		}
-	    }
+	    };
 	};
     });
 
@@ -202,7 +202,7 @@
 		delete: function(vehicle) {
 		    return $http.delete(baseUrl + vehicle.id + '/');
 		}
-	    }
+	    };
 	};
     });
 
@@ -265,19 +265,17 @@
 			var new_filters = angular.copy(filters);
 
 			for (var key in new_filters) {
-			    if (new_filters[key] === ""
-				|| new_filters[key] === null
-				|| new_filters[key] === undefined) {
+			    if (new_filters[key] === "" || new_filters[key] === null || new_filters[key] === undefined) {
 				delete new_filters[key];
 			    }
 			}
 
 			if (new_filters.hasOwnProperty('engine_start')) {
-			    new_filters['engine_start'] = sanitizeEngine(new_filters['engine_start']);
+			    new_filters.engine_start = sanitizeEngine(new_filters.engine_start);
 			}
 
 			if (new_filters.hasOwnProperty('engine_end')) {
-			    new_filters['engine_end'] = sanitizeEngine(new_filters['engine_end'])
+			    new_filters.engine_end = sanitizeEngine(new_filters.engine_end);
 			}
 
 			load_items(new_filters);
@@ -288,7 +286,7 @@
 			$scope.auto_maker_list = data;
 		    });
 
-		    $scope.model_list = []
+		    $scope.model_list = [];
 		    VehicleModel.all().success(function(data){
 			$scope.model_list = data;
 		    });
@@ -327,7 +325,7 @@
 		    $scope.deleteConfirm = function(vehicle) {
 			$scope.vehicle = vehicle;
 			$("#modalDeleteVehicle").modal();
-		    }
+		    };
 
 		    $scope.delete = function(vehicle) {
 			$("#modalDeleteVehicle").modal('hide');
@@ -359,7 +357,7 @@
 		    $scope.deleteConfirm = function(automaker) {
 			$scope.auto_maker = automaker;
 			$("#modalDeleteAutoMaker").modal();
-		    }
+		    };
 
 		    $scope.delete = function(automaker) {
 			$("#modalDeleteAutoMaker").modal('hide');
@@ -395,12 +393,11 @@
 
 		    function load_items() {
 			VehicleModel.all().success(function(data){
-			    console.log(data)
 			    $scope.list = data;
 			});
 		    }
 
-		    load_items()
+		    load_items();
 
 		    $scope.deleteConfirm = function(model) {
 			$scope.vehicle_model = model;
