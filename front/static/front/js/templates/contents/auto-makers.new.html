@@ -1,7 +1,7 @@
 <div class="modal fade" id="newAutoMakerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" >
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <form ng-submit="save(auto_maker)">
+      <form name="autoMakerForm" ng-submit="autoMakerForm.$valid && save(auto_maker)" novalidate>
 	<div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
           <h4 class="modal-title" ng-hide="auto_maker.id">Nova montadora</h4>
@@ -10,16 +10,16 @@
 	<div class="modal-body">
 	  <div class="row">
 	    <div class="col-md-12">
-	      <div class="form-group">
-		<label for="inputName">Nome</label>
-		<input type="text" class="form-control" placeholder="Name" required="true" ng-model="auto_maker.name">
+	      <div class="form-group" ng-class="{'has-error': autoMakerForm.name.$invalid && autoMakerForm.name.$dirty }">
+		<label class="control-label" for="auto-maker-name">Nome</label>
+		<input type="text" name="name" id="auto-maker-name" class="form-control" placeholder="Name" required ng-model="auto_maker.name">
 	      </div>
 	    </div>
 	  </div>
 	</div>
 	<div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
-          <button type="submit" class="btn btn-primary">Gravar</button>
+          <button type="submit" class="btn btn-primary" ng-disabled="autoMakerForm.$invalid">Gravar</button>
 	</div>
       </form>
     </div>
